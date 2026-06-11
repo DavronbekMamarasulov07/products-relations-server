@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { notifyNewUser } from "../bot/notifier.js";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -23,12 +24,15 @@ const register = async (req, res) => {
       });
     }
 
-    await User.create({
+    const newUser = await User.create({
       firstName,
       lastName,
       email,
       password,
     });
+
+    // Adminlarga Telegram orqali xabar yuborish
+    notifyNewUser(newUser);
 
     res.status(201).json({
       message: "User successfully registered!",

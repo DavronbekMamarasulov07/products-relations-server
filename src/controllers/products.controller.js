@@ -1,5 +1,6 @@
 import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js"
+import { notifyNewProduct } from "../bot/notifier.js";
 
 
 const createProduct = async (req, res) => {
@@ -21,7 +22,10 @@ const createProduct = async (req, res) => {
         const newProduct = await Product.create({
             title,price, category: category._id
         })
-        
+
+        // Adminlarga Telegram orqali xabar yuborish
+        notifyNewProduct(newProduct);
+
         res.status(201).json({product: newProduct})
 
         
